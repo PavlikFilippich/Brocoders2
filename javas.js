@@ -76,19 +76,22 @@ minuscell.onclick = function () {
 
     if (amountsquares != 1) {
         for (let i = 0; i < amountRow; i++) {
-            let Column = table.getElementsByTagName('tr')[i].getElementsByTagName('td')[localColumn];
-            Column.remove();
+            table.getElementsByTagName('tr')[i].getElementsByTagName('td')[localColumn].remove();
+            //let Column = table.getElementsByTagName('tr')[i].getElementsByTagName('td')[localColumn];
+            //Column.remove();
         }
         minuscell.style.left = table.getElementsByTagName('tr')[0].lastElementChild.offsetLeft + 'px';
         concealButton();
+        
     }
 };
 
 // Delete row
 minusrow.onclick = function () {
     if (amountRow != 1) {
-        let Rows = table.getElementsByTagName('tr')[localRow];
-        Rows.remove();
+        table.getElementsByTagName('tr')[localRow].remove();
+        //let Rows = table.getElementsByTagName('tr')[localRow];
+        //Rows.remove();
 
         minusrow.style.top = table.lastElementChild.offsetTop + 'px';
 
@@ -98,21 +101,23 @@ minusrow.onclick = function () {
 
 // Если не наведено на таблицу скривает кнопки удаления
 table.onmouseout = function () {
-    HideTimer = setTimeout(concealButton, 1) ;
+    HideTimer = setTimeout(concealButton, 10) ;
 }
 
 // Если навели на кнопку минуса строки - отменяет таймер
 minusrow.onmouseover = function () {
     clearTimeout(HideTimer);
+    concealButtons();
 }
 
 // Если навели на кнопку минуса колонки - отменяет таймер
 minuscell.onmouseover = function () {
     clearTimeout(HideTimer);
+    concealButtons();
 }
 
 function concealButtons() {
-    if (amountRow != 1) {
+    if (amountRow != 1 ) {
         minusrow.style.visibility = "visible";
     }
     if (amountsquares != 1) {

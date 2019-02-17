@@ -1,7 +1,6 @@
 body{
     margin:0px;
-    padding:60px;
-    
+    padding:60px;   
 }
 
 .container{
@@ -30,6 +29,9 @@ td{
     transition-duration: 1s;
     opacity: 1;
     cursor: pointer;
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
 }
 
 .button:hover{
@@ -39,10 +41,8 @@ td{
 
 .plus{
     background-color: #f3a500;
-    color: white;
-    font-size: 25px;
-    font-weight: bold;
     border:1px solid #f3a500; 
+    line-height: 50px; 
 }
 
 .plus-column{
@@ -57,29 +57,18 @@ td{
 
 .minus{
     background-color:#8B0000;  
-    color: white;
-    font-size: 25px;
-    font-weight: bold;
     border:1px solid #8B0000;
     margin:1px;
     visibility: hidden;
-}
-
-.minus-col,
-.minus-row {
-    visibility: hidden;
+    line-height: 40px;   
 }
 
 .minus-row{
    right:100%;
-   top:2px;
-   
+   top:2px;  
 }
 
 .minus-column{
     bottom:100%;
-    left:2px;
-
+    left:10px;
 }
-
-

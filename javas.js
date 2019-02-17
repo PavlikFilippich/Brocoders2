@@ -1,40 +1,38 @@
-var table = document.getElementsByClassName('tablefirst')[0];
-
-//Buttons 
-var plusrow = document.getElementsByClassName('plus-row')[0]; 
-
-var pluscell = document.getElementsByClassName('plus-column')[0];
-
-var minusrow = document.getElementsByClassName('minus-row')[0];
-
-var minuscell = document.getElementsByClassName('minus-column')[0];
-
 // Time hide minus buttons
-var HideTimer;
+let HideTimer;
 
 // coordinates
-var localColumn , localRow;
+let localColumn , localRow;
 
-// Количество рядов , Количество ячеек в ряде
-var amountRow , amountsquarest;
+const table = document.querySelector(".tablefirst");
+
+//Buttons 
+const plusrow = document.querySelector(".plus-row"); 
+const pluscell = document.querySelector(".plus-column");
+const minusrow = document.querySelector(".minus-row");
+const minuscell = document.querySelector(".minus-column");
+
+class MyTable {
+    constructor(){}
+    createTable(x){
+        for (let i = 0; i < x; i++) {
+        let addRow = table.insertRow(i);
+    
+        for (let k = 0; k < x; k++) {
+            addRow.insertCell(k);
+        }}
+    }    
+}
 
 // При загрузке страницы создаёт таблицу 4х4
-window.onload = function () {    
-    for (let i = 0; i < 4; i++) {
-        table.appendChild(document.createElement('tr'));
-
-        for (let r = 0; r < 4; r++) {
-            document.getElementsByTagName('tr')[i].appendChild(document.createElement('td'));
-        }
-    }
-};
-
-table.onmouseover = function (event) {
+window.onload = new MyTable() ;
+window.onload.createTable(4);
     
-    concealButtons();
-
-    var target = event.target;
-
+table.onmouseover = function (event) {   
+    VisibleButton();
+    clearTimeout(HideTimer);
+    
+    let target = event.target;
     if (target.tagName != 'TD') return; // Не на TD ? Тогда не интересует
 
     // Select coordinates
@@ -42,85 +40,71 @@ table.onmouseover = function (event) {
     localRow = target.parentNode.rowIndex;
     // Moving Coordinates
     minuscell.style.left = target.offsetLeft + 'px';
-    minusrow.style.top = target.offsetTop + 'px';
-    clearTimeout(HideTimer);
+    minusrow.style.top = target.offsetTop + 'px';   
 };
 
-document.onmouseover = function () {
-    amountRow = table.getElementsByTagName('tr').length;
-    amountsquares = table.getElementsByTagName('tr')[0].getElementsByTagName('td').length;
-}
-
-// Add column
-pluscell.onclick = function () {
-    for (let i = 0; i < amountRow; i++) {
-        document.getElementsByTagName('tr')[i].appendChild(document.createElement('td'));
+//Add col
+pluscell.addEventListener('click' , addcol);
+function addcol () {
+    for (let i = 0; i < table.rows.length; i++) {
+        table.rows[i].insertCell();
     }
 };
 
 // Add row
-plusrow.onclick = function () {
-    table.appendChild(document.createElement('tr'));
-    for (let i = 0; i < amountsquares; i++) {
-        document.getElementsByTagName('tr')[amountRow].appendChild(document.createElement('td'));
+plusrow.addEventListener('click', addrow);
+function addrow() {
+    table.insertRow();
+    for (let i = 0; i < table.rows[0].cells.length; i++) {
+        table.rows[table.rows.length-1].insertCell(i);
     }
 };
 
 function concealButton() {
     minusrow.style.visibility = "hidden";
     minuscell.style.visibility = "hidden";
-}
+};
 
 // Delete column
-minuscell.onclick = function () {
-
-    if (amountsquares != 1) {
-        for (let i = 0; i < amountRow; i++) {
-            table.getElementsByTagName('tr')[i].getElementsByTagName('td')[localColumn].remove();
-            //let Column = table.getElementsByTagName('tr')[i].getElementsByTagName('td')[localColumn];
-            //Column.remove();
-        }
-        minuscell.style.left = table.getElementsByTagName('tr')[0].lastElementChild.offsetLeft + 'px';
-        concealButton();
-        
+minuscell.addEventListener('click' , removecell);
+function removecell () { 
+    if (table.rows[0].cells.length != 1) {
+        for (let i = 0; i < table.rows.length; i++) {
+            table.rows[i].deleteCell(localColumn); 
+        }  
     }
+    minuscell.style.display = 'none';
 };
 
 // Delete row
-minusrow.onclick = function () {
-    if (amountRow != 1) {
-        table.getElementsByTagName('tr')[localRow].remove();
-        //let Rows = table.getElementsByTagName('tr')[localRow];
-        //Rows.remove();
-
-        minusrow.style.top = table.lastElementChild.offsetTop + 'px';
-
-        concealButton();
-    }
+minusrow.addEventListener('click', removerow );
+function removerow () {
+    if (table.rows.length != 1) {table.deleteRow(localRow);}
+    minusrow.style.display = 'none';
 };
 
 // Если не наведено на таблицу скривает кнопки удаления
-table.onmouseout = function () {
-    HideTimer = setTimeout(concealButton, 10) ;
-}
+table.onmouseout = function() { HideTimer = setTimeout(concealButton, 500) }
 
 // Если навели на кнопку минуса строки - отменяет таймер
-minusrow.onmouseover = function () {
+minusrow.onmouseover = function() {
     clearTimeout(HideTimer);
-    concealButtons();
+    VisibleButton();
 }
 
 // Если навели на кнопку минуса колонки - отменяет таймер
-minuscell.onmouseover = function () {
+minuscell.onmouseover =  function() {
     clearTimeout(HideTimer);
-    concealButtons();
+    VisibleButton();
 }
 
-function concealButtons() {
-    if (amountRow != 1 ) {
+function VisibleButton () {
+    if (table.rows.length != 1) {
         minusrow.style.visibility = "visible";
+        minusrow.style.display = "";
     }
-    if (amountsquares != 1) {
+    if (table.rows[0].cells.length != 1) {
+        minuscell.style.display = "";
         minuscell.style.visibility = "visible";
     }
 };

@@ -13,21 +13,18 @@ const minusrow = document.querySelector(".minus-row");
 const minuscell = document.querySelector(".minus-column");
 
 class MyTable {
-    constructor(){}
-    createTable(x){
+    constructor(x){
         for (let i = 0; i < x; i++) {
-        let addRow = table.insertRow(i);
-    
-        for (let k = 0; k < x; k++) {
-            addRow.insertCell(k);
+            let addRow = table.insertRow(i);
+        
+            for (let k = 0; k < x; k++) {
+                addRow.insertCell(k);
         }}
     }    
 }
 
 // При загрузке страницы создаёт таблицу 4х4
-window.onload = new MyTable() ;
-window.onload.createTable(4);
-    
+window.onload = new MyTable(4) ;    
 table.onmouseover = function (event) {   
     VisibleButton();
     clearTimeout(HideTimer);
@@ -84,19 +81,19 @@ function removerow () {
 };
 
 // Если не наведено на таблицу скривает кнопки удаления
-table.onmouseout = function() { HideTimer = setTimeout(concealButton, 500) }
+table.onmouseout = () => { HideTimer = setTimeout(concealButton, 100)};
 
 // Если навели на кнопку минуса строки - отменяет таймер
-minusrow.onmouseover = function() {
+minusrow.onmouseover = () => {
     clearTimeout(HideTimer);
     VisibleButton();
-}
+};
 
 // Если навели на кнопку минуса колонки - отменяет таймер
-minuscell.onmouseover =  function() {
+minuscell.onmouseover =  () => {
     clearTimeout(HideTimer);
     VisibleButton();
-}
+};
 
 function VisibleButton () {
     if (table.rows.length != 1) {

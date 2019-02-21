@@ -1,107 +1,91 @@
-// Time hide minus buttons
-let HideTimer;
-
-// coordinates
-let localColumn , localRow;
-
-const table = document.querySelector(".tablefirst");
-
-//Buttons 
-const plusrow = document.querySelector(".plus-row"); 
-const pluscell = document.querySelector(".plus-column");
-const minusrow = document.querySelector(".minus-row");
-const minuscell = document.querySelector(".minus-column");
-
 class MyTable {
-    constructor(x){
-        for (let i = 0; i < x; i++) {
-            let addRow = table.insertRow(i);
+    constructor(size){
+
+        this.plusRow = document.querySelector(".plus-row"); 
+        this.plusCell = document.querySelector(".plus-column");
+        this.minusRow = document.querySelector(".minus-row");
+        this.minusCell = document.querySelector(".minus-column");
+        this.table = document.querySelector(".tablefirst");
+
+        this.plusCell.addEventListener('click', this.addCol.bind(this));
+        this.plusRow.addEventListener('click', this.addRow.bind(this));
+        this.minusCell.addEventListener('click' , this.removeCell.bind(this));
+        this.minusRow.addEventListener('click', this.removeRow.bind(this));
+        this.table.addEventListener ('mousemove',this.movingTable.bind(this));
+        this.table.addEventListener ('mousemove',this.visibleButton.bind(this));
+        this.table.addEventListener('mousemove',this.hideTimers.bind(this)) ;
+        this.minusRow.addEventListener ('mousemove',this.cancelButton.bind(this));
+        this.minusCell.addEventListener ('mousemove',this.cancelButton.bind(this));
+        this.table.addEventListener('mousemove',this.hideTimers.bind(this)); 
+
+        for (let i = 0; i < size; i++) {
+            let addRow = this.table.insertRow(i);
         
-            for (let k = 0; k < x; k++) {
+            for (let k = 0; k < size; k++) {
                 addRow.insertCell(k);
-        }}
-    }    
+        }};    
+    } 
+
+    movingTable (event) {         
+        clearTimeout(this.hideTimers);
+        let target = event.target;
+        if (target.tagName != 'TD') return; // Не на TD ? Тогда не интересует
+        // Select coordinates
+        this.localColumn = target.cellIndex;
+        this.localRow = target.parentNode.rowIndex;
+        // Moving Coordinates
+
+        this.minusCell.style.left = target.offsetLeft + 'px';
+        this.minusRow.style.top = target.offsetTop + 'px'; 
+    };
+    addCol () {
+        for (let i = 0; i < this.table.rows.length; i++) {
+            this.table.rows[i].insertCell();
+        }
+    };  
+    addRow() {
+        this.table.insertRow();
+        for (let i = 0; i < this.table.rows[0].cells.length; i++) {
+            this.table.rows[this.table.rows.length-1].insertCell(i);
+        }
+    };
+    //  Если не наведено на таблицу скривает кнопки удаления 
+    hideTimers(){
+        this.hideTimer = setTimeout(this.concealButton.bind(this), 100)};
+        
+    concealButton() {
+         this.minusRow.style.visibility = "hidden";
+         this.minusCell.style.visibility = "hidden";
+     };
+    removeCell () { 
+        if (this.table.rows[0].cells.length !== 1) {
+            for (let i = 0; i < this.table.rows.length; i++) {
+                this.table.rows[i].deleteCell(this.localColumn); 
+            }  
+        }
+        this.minusCell.style.display = 'none';
+    };
+    removeRow () {
+        if (this.table.rows.length !== 1) {this.table.deleteRow(this.localRow);}
+        this.minusRow.style.display = 'none';
+    };
+
+    visibleButton () {
+        if (this.table.rows.length !== 1) {
+            this.minusRow.style.visibility = "visible";
+            this.minusRow.style.display = "";
+        }
+        if (this.table.rows[0].cells.length !== 1) {
+            this.minusCell.style.display = "";
+            this.minusCell.style.visibility = "visible";
+        }
+        
+    };
+
+    // Если навели на кнопку минуса строки - отменяет таймер
+    cancelButton(){
+        clearTimeout(this.hideTimer);
+        this.visibleButton();
+    };
 }
-
-// При загрузке страницы создаёт таблицу 4х4
-window.onload = new MyTable(4) ;    
-table.onmouseover = function (event) {   
-    VisibleButton();
-    clearTimeout(HideTimer);
-    
-    let target = event.target;
-    if (target.tagName != 'TD') return; // Не на TD ? Тогда не интересует
-
-    // Select coordinates
-    localColumn = target.cellIndex;
-    localRow = target.parentNode.rowIndex;
-    // Moving Coordinates
-    minuscell.style.left = target.offsetLeft + 'px';
-    minusrow.style.top = target.offsetTop + 'px';   
-};
-
-//Add col
-pluscell.addEventListener('click' , addcol);
-function addcol () {
-    for (let i = 0; i < table.rows.length; i++) {
-        table.rows[i].insertCell();
-    }
-};
-
-// Add row
-plusrow.addEventListener('click', addrow);
-function addrow() {
-    table.insertRow();
-    for (let i = 0; i < table.rows[0].cells.length; i++) {
-        table.rows[table.rows.length-1].insertCell(i);
-    }
-};
-
-function concealButton() {
-    minusrow.style.visibility = "hidden";
-    minuscell.style.visibility = "hidden";
-};
-
-// Delete column
-minuscell.addEventListener('click' , removecell);
-function removecell () { 
-    if (table.rows[0].cells.length != 1) {
-        for (let i = 0; i < table.rows.length; i++) {
-            table.rows[i].deleteCell(localColumn); 
-        }  
-    }
-    minuscell.style.display = 'none';
-};
-
-// Delete row
-minusrow.addEventListener('click', removerow );
-function removerow () {
-    if (table.rows.length != 1) {table.deleteRow(localRow);}
-    minusrow.style.display = 'none';
-};
-
-// Если не наведено на таблицу скривает кнопки удаления
-table.onmouseout = () => { HideTimer = setTimeout(concealButton, 100)};
-
-// Если навели на кнопку минуса строки - отменяет таймер
-minusrow.onmouseover = () => {
-    clearTimeout(HideTimer);
-    VisibleButton();
-};
-
-// Если навели на кнопку минуса колонки - отменяет таймер
-minuscell.onmouseover =  () => {
-    clearTimeout(HideTimer);
-    VisibleButton();
-};
-
-function VisibleButton () {
-    if (table.rows.length != 1) {
-        minusrow.style.visibility = "visible";
-        minusrow.style.display = "";
-    }
-    if (table.rows[0].cells.length != 1) {
-        minuscell.style.display = "";
-        minuscell.style.visibility = "visible";
-    }
-};
+window.onload = new MyTable(4) ;

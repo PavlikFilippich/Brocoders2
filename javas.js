@@ -14,8 +14,8 @@ class MyTable {
         this.table.addEventListener ('mousemove',this.movingTable.bind(this));
         this.table.addEventListener ('mousemove',this.visibleButton.bind(this));
         this.table.addEventListener('mousemove',this.hideTimers.bind(this)) ;
-        this.minusRow.addEventListener ('mousemove',this.cancelButton.bind(this));
-        this.minusCell.addEventListener ('mousemove',this.cancelButton.bind(this));
+        this.minusRow.addEventListener ('mousemove',this.cancelRow.bind(this));
+        this.minusCell.addEventListener ('mousemove',this.cancelCell.bind(this));
         this.table.addEventListener('mousemove',this.hideTimers.bind(this)); 
 
         for (let i = 0; i < size; i++) {
@@ -51,11 +51,17 @@ class MyTable {
     };
     //  Если не наведено на таблицу скривает кнопки удаления 
     hideTimers(){
-        this.hideTimer = setTimeout(this.concealButton.bind(this), 100)};
+        this.hideTimer = setTimeout(this.concealButton.bind(this), 300)};
         
     concealButton() {
-         this.minusRow.style.visibility = "hidden";
-         this.minusCell.style.visibility = "hidden";
+        if (!this.minusRow){
+            this.minusRow.style.visibility = "hidden";
+        }
+        //  this.minusRow.style.visibility = "hidden";
+         if (!this.minusCell){
+            this.minusCell.style.visibility = "hidden";
+        }
+        //  this.minusCell.style.visibility = "hidden";
      };
     removeCell () { 
         if (this.table.rows[0].cells.length !== 1) {
@@ -70,22 +76,29 @@ class MyTable {
         this.minusRow.style.display = 'none';
     };
 
+    
+
+    // Если навели на кнопку минуса строки - отменяет таймер
+    cancelRow(){
+        clearTimeout(this.hideTimer);
+        this.visibleButton();
+    };
+    cancelCell () {   
+
+        clearTimeout(this.hideTimer);
+        this.visibleButton();
+        
+    };
     visibleButton () {
         if (this.table.rows.length !== 1) {
             this.minusRow.style.visibility = "visible";
-            this.minusRow.style.display = "";
+            this.minusRow.style.display = "block";
         }
         if (this.table.rows[0].cells.length !== 1) {
-            this.minusCell.style.display = "";
+            this.minusCell.style.display = "block";
             this.minusCell.style.visibility = "visible";
         }
         
-    };
-
-    // Если навели на кнопку минуса строки - отменяет таймер
-    cancelButton(){
-        clearTimeout(this.hideTimer);
-        this.visibleButton();
     };
 }
 window.onload = new MyTable(4) ;

@@ -11,7 +11,7 @@ class MyTable {
     this.minusRow.addEventListener('click', this.removeRow.bind(this));
     this.minusRow.addEventListener('mousemove', this.cancelRow.bind(this));
     this.minusCell.addEventListener('mousemove', this.cancelCell.bind(this));
-    this.table.addEventListener('mousemove', (e) => { this.movingTable(e); this.visibleButton(e); this.hideTimers(e); });
+    this.table.addEventListener('mousemove', () => { this.movingTable(); this.visibleButton(); this.hideTimers(); });
     this.minusRow.addEventListener('mousemove', this.cancelRow.bind(this));
     this.minusCell.addEventListener('mousemove', this.cancelCell.bind(this));
 
